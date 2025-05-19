@@ -1,0 +1,17 @@
+
+SALES RECEIPT
+-------------
+Receipt #: 2
+Date: 2025-05-19
+Customer: Shanuka
+Phone: Karunarathne
+
+ITEMS:
+1 x Item () @ $348.00 = $348.00
+1 x Item () @ $348.00 = $348.00
+1 x Item () @ $300.00 = $300.00
+
+TOTAL: $996.00
+-------------
+Thank you for your business!
+  

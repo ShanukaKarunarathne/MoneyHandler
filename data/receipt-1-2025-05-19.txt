@@ -1,0 +1,15 @@
+
+SALES RECEIPT
+-------------
+Receipt #: 1
+Date: 2025-05-19
+Customer: Shanuka
+Phone: Karunarathne
+
+ITEMS:
+1 x Item () @ $350.00 = $350.00
+
+TOTAL: $350.00
+-------------
+Thank you for your business!
+  

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Management System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .nav {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .nav button {
+      margin-right: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .section {
+      display: none;
+      margin-top: 20px;
+    }
+    .active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    input, select {
+      padding: 8px;
+      margin: 5px 0;
+    }
+    button {
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    .summary-box {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+    }
+    .item-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .item-row input, .item-row select {
+      margin-right: 10px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .password-prompt {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Shop Management System</h1>
+    
+    <div class="nav">
+      <button onclick="showSection('dashboard')">Dashboard</button>
+      <button onclick="showSection('add-item')">Add Item</button>
+      <button onclick="showSection('sell')">Sell</button>
+      <button onclick="showSection('expenses')">Expenses</button>
+      <button onclick="showSection('reports')">Reports</button>
+    </div>
+    
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section active">
+      <h2>Dashboard</h2>
+      <div class="summary-box">
+        <h3>Today's Summary</h3>
+        <p>Date: <span id="today-date"></span></p>
+        <p>Total Sales: Rs.<span id="today-sales">0.00</span></p>
+        <p>Total Expenses: Rs.<span id="today-expenses">0.00</span></p>
+        <p>Profit: Rs.<span id="today-profit">0.00</span></p>
+      </div>
+      
+      <h3>Recent Sales</h3>
+      <table id="recent-sales">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    
+    <!-- Add Item Section -->
+    <div id="add-item" class="section">
+        <h2>Add Inventory Items</h2>
+        <div id="item-form">
+        <div class="item-row">
+            <input type="text" placeholder="Name" class="name">
+            <select class="category">
+            <option value="">Select Category</option>
+            <option value="phone">Phone</option>
+            <option value="accessory">Accessory</option>
+            <option value="other">Other</option>
+            </select>
+            <input type="text" placeholder="Model" class="model">
+            <input type="text" placeholder="IMEI (for phones)" class="imei" disabled>
+            <input type="number" placeholder="Buy Price" class="buy-price" step="0.01">
+            <input type="number" placeholder="Quantity" class="quantity" value="1" min="1">
+            <button onclick="removeItemRow(this)">Remove</button>
+        </div>
+        </div>
+        <button onclick="addItemRow()">Add Another Item</button>
+        <button onclick="submitItems()">Submit All Items</button>
+        
+        <!-- Add this new section for viewing inventory -->
+        <h2 style="margin-top: 30px;">Current Inventory</h2>
+        <button onclick="loadInventory()">Refresh Inventory</button>
+        <table id="inventory-table" style="margin-top: 15px;">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Model</th>
+            <th>IMEI</th>
+            <th>Buy Price</th>
+            <th>Quantity</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+    </div>
+  
+    
+    <!-- Sell Section -->
+    <div id="sell" class="section">
+      <h2>Sell Items</h2>
+      <input type="text" id="inventory-search" class="search-bar" placeholder="Search inventory by name, model, or IMEI...">
+      
+      <div id="search-results"></div>
+      
+      <h3>Sale Items</h3>
+      <table id="sale-items">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Model</th>
+            <th>IMEI</th>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <div id="sale-form" style="margin-top: 20px;">
+        <h3>Customer Information</h3>
+        <input type="text" id="customer-name" placeholder="Customer Name" required>
+        <input type="text" id="customer-phone" placeholder="Customer Phone" required>
+        <button onclick="processSale()">Complete Sale</button>
+      </div>
+    </div>
+    
+    <!-- Expenses Section -->
+    <div id="expenses" class="section">
+      <h2>Expenses</h2>
+      
+      <div class="password-prompt" id="expenses-password-prompt">
+        <input type="password" id="expenses-password" placeholder="Enter password">
+        <button onclick="verifyExpensesPassword()">Submit</button>
+      </div>
+      
+      <div id="expenses-content" style="display: none;">
+        <h3>Add Expense</h3>
+        <div>
+          <select id="expense-type">
+            <option value="">Select Type</option>
+            <option value="rent">Rent</option>
+            <option value="salary">Salary</option>
+            <option value="electricity">Electricity</option>
+            <option value="other">Other</option>
+          </select>
+          <input type="number" id="expense-amount" placeholder="Amount" step="0.01">
+          <input type="date" id="expense-date" value="">
+          <button onclick="addExpense()">Add Expense</button>
+        </div>
+        
+        <h3>Expense List</h3>
+        <table id="expense-list">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Reports Section -->
+    <div id="reports" class="section">
+      <h2>Reports</h2>
+      
+      <div class="password-prompt" id="reports-password-prompt">
+        <input type="password" id="reports-password" placeholder="Enter password">
+        <button onclick="verifyReportsPassword()">Submit</button>
+      </div>
+      
+      <div id="reports-content" style="display: none;">
+        <h3>Daily Report</h3>
+        <div>
+          <input type="date" id="report-date" value="">
+          <button onclick="generateDailyReport()">Generate Report</button>
+        </div>
+        
+        <div id="report-summary" class="summary-box" style="display: none;">
+          <h3>Summary for <span id="report-date-display"></span></h3>
+          <p>Total Sales: Rs.<span id="report-sales">0.00</span></p>
+          <p>Total Expenses: Rs.<span id="report-expenses">0.00</span></p>
+          <p>Profit: Rs.<span id="report-profit">0.00</span></p>
+          <button onclick="exportReport()">Export to TXT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>

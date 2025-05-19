@@ -1,0 +1,15 @@
+
+SALES RECEIPT
+-------------
+Receipt #: 3
+Date: 2025-05-19
+Customer: Shanuka
+Phone: 080
+
+ITEMS:
+2 x Item () @ $348.00 = $696.00
+
+TOTAL: $696.00
+-------------
+Thank you for your business!
+  
